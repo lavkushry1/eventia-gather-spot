@@ -7,6 +7,7 @@ import Hero from '@/components/home/Hero';
 import FeaturedEvents from '@/components/home/FeaturedEvents';
 import { EventProps } from '@/components/home/EventCard';
 import PageTransition from '@/components/common/PageTransition';
+import AnimatedButton from '@/components/ui/AnimatedButton';
 
 // Sample event data
 const eventsData: EventProps[] = [
