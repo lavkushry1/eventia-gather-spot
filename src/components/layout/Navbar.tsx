@@ -1,146 +1,175 @@
 
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Search, ShoppingCart, User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import AnimatedButton from '@/components/ui/AnimatedButton';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import useMobile from '@/hooks/use-mobile';
 
 const Navbar = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const isMobile = useMobile();
   const location = useLocation();
   
-  const navLinks = [
-    { title: 'Home', path: '/' },
-    { title: 'Events', path: '/events' },
-    { title: 'Categories', path: '/categories' },
-    { title: 'About', path: '/about' },
-  ];
-  
+  const handleScroll = () => {
+    const offset = window.scrollY;
+    if (offset > 50) {
+      setScrolled(true);
+    } else {
+      setScrolled(false);
+    }
+  };
+
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 10) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
   
   useEffect(() => {
-    setIsMobileMenuOpen(false);
+    // Close mobile menu when route changes
+    setIsOpen(false);
   }, [location.pathname]);
-  
+
+  const navItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Events', href: '/events' },
+    { name: 'IPL Tickets', href: '/ipl' },
+    { name: 'About', href: '/about' },
+  ];
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
   return (
-    <header className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-      isScrolled ? "py-3 glassmorphism shadow-sm" : "py-5 bg-transparent"
-    )}>
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="flex items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-2xl font-bold tracking-tight text-primary"
-          >
-            Event<span className="text-accent">ia</span>
-          </motion.div>
-        </Link>
-        
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex items-center space-x-1">
-          {navLinks.map((link, index) => (
-            <Link
-              key={link.path}
-              to={link.path}
+    <header
+      className={cn(
+        'fixed top-0 w-full z-50 transition-all duration-300',
+        scrolled ? 'bg-background/80 backdrop-blur-md shadow-sm' : 'bg-transparent',
+        location.pathname === '/' && !scrolled && !isOpen ? 'text-white' : 'text-foreground'
+      )}
+    >
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex-1 flex items-center">
+            <Link 
+              to="/" 
+              className="text-2xl font-bold tracking-tight"
+            >
+              Event<span className={cn(
+                'text-primary',
+                location.pathname === '/' && !scrolled && !isOpen ? 'text-white' : ''
+              )}>ia</span>
+            </Link>
+          </div>
+          
+          <nav className="hidden md:flex items-center space-x-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={cn(
+                  'px-3 py-2 rounded-md text-sm font-medium transition-colors relative group',
+                  isActive(item.href) 
+                    ? 'text-accent font-semibold' 
+                    : 'hover:text-accent'
+                )}
+              >
+                {item.name}
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-accent rounded"
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ 
+                    width: isActive(item.href) ? '100%' : 0,
+                    opacity: isActive(item.href) ? 1 : 0
+                  }}
+                  transition={{ duration: 0.3 }}
+                />
+              </Link>
+            ))}
+          </nav>
+          
+          <div className="hidden md:flex items-center space-x-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="flex items-center">
+                  <span>Help</span>
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>FAQs</DropdownMenuItem>
+                <DropdownMenuItem>Contact Us</DropdownMenuItem>
+                <DropdownMenuItem>Support</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            
+            <Button>
+              Sign In
+            </Button>
+          </div>
+          
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Toggle Menu"
+              onClick={() => setIsOpen(!isOpen)}
               className={cn(
-                "px-4 py-2 rounded-md text-sm font-medium transition-colors",
-                location.pathname === link.path
-                  ? "text-accent"
-                  : "text-foreground/80 hover:text-foreground hover:bg-secondary/50"
+                'p-1',
+                location.pathname === '/' && !scrolled ? 'text-white hover:text-white/80' : ''
               )}
             >
-              <motion.span
-                initial={{ opacity: 0, y: -5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 * index }}
-              >
-                {link.title}
-              </motion.span>
-            </Link>
-          ))}
-        </nav>
-        
-        {/* Right side actions */}
-        <div className="flex items-center">
-          <button className="mr-2 rounded-md p-2 text-foreground/80 hover:text-foreground hover:bg-secondary/50 transition-colors">
-            <Search size={20} />
-          </button>
-          
-          <Link to="/cart" className="relative mr-2 rounded-md p-2 text-foreground/80 hover:text-foreground hover:bg-secondary/50 transition-colors">
-            <ShoppingCart size={20} />
-            <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
-              2
-            </span>
-          </Link>
-          
-          <AnimatedButton
-            variant="accent"
-            size="sm"
-            className="hidden md:inline-flex ml-2"
-          >
-            Sign In
-          </AnimatedButton>
-          
-          <button
-            className="ml-2 md:hidden rounded-md p-2 text-foreground/80 hover:text-foreground hover:bg-secondary/50 transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
         </div>
       </div>
       
       {/* Mobile Menu */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
+        {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden glassmorphism border-t border-border/50 overflow-hidden"
+            className="md:hidden bg-background border-t"
           >
-            <nav className="flex flex-col px-4 py-4 space-y-2">
-              {navLinks.map((link) => (
+            <div className="container mx-auto px-4 py-4 space-y-2">
+              {navItems.map((item) => (
                 <Link
-                  key={link.path}
-                  to={link.path}
+                  key={item.name}
+                  to={item.href}
                   className={cn(
-                    "px-4 py-3 rounded-md text-sm font-medium transition-colors",
-                    location.pathname === link.path
-                      ? "bg-secondary text-accent"
-                      : "text-foreground/80 hover:text-foreground hover:bg-secondary/50"
+                    'block px-3 py-2 rounded-md text-base font-medium transition-colors',
+                    isActive(item.href) 
+                      ? 'bg-primary/10 text-primary font-semibold' 
+                      : 'hover:bg-muted'
                   )}
                 >
-                  {link.title}
+                  {item.name}
                 </Link>
               ))}
-              <AnimatedButton
-                variant="accent"
-                size="sm"
-                fullWidth
-                className="mt-4"
-              >
-                Sign In
-              </AnimatedButton>
-            </nav>
+              <div className="pt-4 space-y-2">
+                <Button variant="outline" className="w-full justify-start">
+                  Sign In
+                </Button>
+                <Button className="w-full justify-start">
+                  Register
+                </Button>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
