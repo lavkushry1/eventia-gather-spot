@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -57,12 +58,12 @@ const Navbar = () => {
         location.pathname === '/' && !scrolled && !isOpen ? 'text-white' : 'text-foreground'
       )}
     >
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="flex h-14 sm:h-16 items-center justify-between">
           <div className="flex-1 flex items-center">
             <Link 
               to="/" 
-              className="text-2xl font-bold tracking-tight"
+              className="text-xl sm:text-2xl font-bold tracking-tight"
             >
               Event<span className={cn(
                 'text-primary',
@@ -128,7 +129,7 @@ const Navbar = () => {
                 location.pathname === '/' && !scrolled ? 'text-white hover:text-white/80' : ''
               )}
             >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
@@ -143,7 +144,7 @@ const Navbar = () => {
             transition={{ duration: 0.3 }}
             className="md:hidden bg-background border-t"
           >
-            <div className="container mx-auto px-4 py-4 space-y-2">
+            <div className="container mx-auto px-3 py-3 space-y-1">
               {navItems.map((item) => (
                 <Link
                   key={item.name}
@@ -158,7 +159,7 @@ const Navbar = () => {
                   {item.name}
                 </Link>
               ))}
-              <div className="pt-4 space-y-2">
+              <div className="pt-3 space-y-2">
                 <Button variant="outline" className="w-full justify-start">
                   Sign In
                 </Button>
