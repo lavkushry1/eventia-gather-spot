@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
@@ -11,12 +10,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import useMobile from '@/hooks/use-mobile';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   const location = useLocation();
   
   const handleScroll = () => {
@@ -36,7 +35,6 @@ const Navbar = () => {
   }, []);
   
   useEffect(() => {
-    // Close mobile menu when route changes
     setIsOpen(false);
   }, [location.pathname]);
 
@@ -136,7 +134,6 @@ const Navbar = () => {
         </div>
       </div>
       
-      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
