@@ -1,67 +1,57 @@
 
 import React from 'react';
-import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { Loader2 } from 'lucide-react';
 
-interface AnimatedButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'default' | 'outline' | 'ghost' | 'accent';
-  size?: 'sm' | 'md' | 'lg';
-  fullWidth?: boolean;
-  icon?: React.ReactNode;
+interface AnimatedButtonProps {
+  children: React.ReactNode;
+  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'accent';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
   isLoading?: boolean;
+  fullWidth?: boolean;
+  className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const AnimatedButton: React.FC<AnimatedButtonProps> = ({
   children,
-  className,
   variant = 'default',
-  size = 'md',
-  fullWidth = false,
-  icon,
+  size = 'default',
   isLoading = false,
-  disabled,
-  ...props
+  fullWidth = false,
+  className = '',
+  onClick,
+  disabled = false,
+  type = 'button',
 }) => {
-  const variants = {
-    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
-    outline: 'border border-input bg-background hover:bg-accent/10 text-foreground',
-    ghost: 'hover:bg-accent/10 text-foreground',
-    accent: 'bg-accent text-white hover:bg-accent/90',
-  };
-
-  const sizes = {
-    sm: 'h-9 px-3 text-sm',
-    md: 'h-10 px-4',
-    lg: 'h-12 px-6 text-lg',
-  };
-
+  const variantClass = variant === 'accent' ? 'bg-accent text-white hover:bg-accent/90' : '';
+  
   return (
-    <motion.button
-      whileTap={{ scale: 0.98 }}
-      whileHover={disabled || isLoading ? {} : { y: -2, transition: { duration: 0.2 } }}
-      className={cn(
-        'relative inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50 disabled:pointer-events-none shadow-glass-button',
-        variants[variant],
-        sizes[size],
-        fullWidth ? 'w-full' : '',
-        className
-      )}
-      disabled={disabled || isLoading}
-      {...props}
+    <motion.div
+      whileHover={{ scale: disabled ? 1 : 1.02 }}
+      whileTap={{ scale: disabled ? 1 : 0.98 }}
+      className={cn(fullWidth ? 'w-full' : '')}
     >
-      {isLoading ? (
-        <div className="flex items-center space-x-1.5">
-          <span className="loading-dot"></span>
-          <span className="loading-dot"></span>
-          <span className="loading-dot"></span>
-        </div>
-      ) : (
-        <>
-          {icon && <span className="mr-2">{icon}</span>}
-          {children}
-        </>
-      )}
-    </motion.button>
+      <Button
+        type={type}
+        variant={variant === 'accent' ? 'default' : variant}
+        size={size}
+        onClick={onClick}
+        disabled={disabled || isLoading}
+        className={cn(
+          variantClass,
+          fullWidth ? 'w-full' : '',
+          className
+        )}
+      >
+        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+        {children}
+      </Button>
+    </motion.div>
   );
 };
 

@@ -16,6 +16,9 @@ export interface EventProps {
   category: string;
   attendees: number;
   featured?: boolean;
+  homeTeam?: string;
+  awayTeam?: string;
+  venueCapacity?: number;
 }
 
 interface EventCardProps {
@@ -40,9 +43,12 @@ const EventCard: React.FC<EventCardProps> = ({
     category,
     attendees,
     featured,
+    homeTeam,
+    awayTeam,
   } = event;
 
   const isFeatured = variant === 'featured' || featured;
+  const teamMatchup = homeTeam && awayTeam ? `${homeTeam} vs ${awayTeam}` : title;
 
   return (
     <motion.div
@@ -76,7 +82,7 @@ const EventCard: React.FC<EventCardProps> = ({
           </div>
           
           <div className="absolute bottom-4 left-4">
-            <p className="text-white font-bold text-xl drop-shadow-md">${price.toFixed(2)}</p>
+            <p className="text-white font-bold text-xl drop-shadow-md">₹{price.toFixed(0)}</p>
           </div>
         </div>
         
@@ -89,7 +95,7 @@ const EventCard: React.FC<EventCardProps> = ({
           </div>
           
           <h3 className="text-xl font-semibold mb-2 text-foreground group-hover:text-accent transition-colors line-clamp-1">
-            {title}
+            {teamMatchup}
           </h3>
           
           <p className="text-muted-foreground text-sm mb-4 line-clamp-2">

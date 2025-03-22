@@ -8,18 +8,19 @@ import Footer from '@/components/layout/Footer';
 import AnimatedButton from '@/components/ui/AnimatedButton';
 import PageTransition from '@/components/common/PageTransition';
 import { toast } from '@/hooks/use-toast';
+import { MapPin } from 'lucide-react'; // Added import for MapPin
 
-// Sample ticket data
+// Sample ticket data for IPL matches
 const ticketsInCart = [
   {
     id: 'ticket-1',
     eventId: '1',
-    eventName: 'Music Festival 2023',
-    ticketType: 'General Admission',
-    price: 149.99,
+    eventName: 'Mumbai Indians vs Chennai Super Kings',
+    ticketType: 'Premium Stand',
+    price: 5499,
     quantity: 2,
-    date: 'July 15, 2023',
-    location: 'Central Park, New York',
+    date: 'April 22, 2023',
+    location: 'Wankhede Stadium, Mumbai',
   },
 ];
 
@@ -446,8 +447,8 @@ const Checkout = () => {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="font-medium">${ticket.price.toFixed(2)} x {ticket.quantity}</p>
-                              <p className="font-bold mt-1">${(ticket.price * ticket.quantity).toFixed(2)}</p>
+                              <p className="font-medium">₹{ticket.price.toFixed(0)} x {ticket.quantity}</p>
+                              <p className="font-bold mt-1">₹{(ticket.price * ticket.quantity).toFixed(0)}</p>
                             </div>
                           </div>
                         ))}
@@ -456,15 +457,15 @@ const Checkout = () => {
                       <div className="space-y-2 pt-4 border-t border-border">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Subtotal</span>
-                          <span>${subtotal.toFixed(2)}</span>
+                          <span>₹{subtotal.toFixed(0)}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Service Fee</span>
-                          <span>${serviceFee.toFixed(2)}</span>
+                          <span>₹{serviceFee.toFixed(0)}</span>
                         </div>
                         <div className="flex justify-between pt-3 border-t border-border font-bold">
                           <span>Total</span>
-                          <span>${total.toFixed(2)}</span>
+                          <span>₹{total.toFixed(0)}</span>
                         </div>
                       </div>
                     </div>
