@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/layout/Navbar';
@@ -122,7 +121,7 @@ const TestimonialsSection = () => {
       id: 2,
       name: 'David Chen',
       role: 'Music Fan',
-      content: 'I've been using Eventia to discover and book concerts for over a year now. The experience is seamless, and I love the personalized recommendations.',
+      content: "I've been using Eventia to discover and book concerts for over a year now. The experience is seamless, and I love the personalized recommendations.",
       avatar: 'https://randomuser.me/api/portraits/men/46.jpg',
     },
     {
